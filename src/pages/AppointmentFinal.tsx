@@ -15,15 +15,14 @@ import {
 
 import { Link } from "react-router-dom";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import moment from "moment";
 
 import Logo from "../assets/logo.png";
 
-type Props = {
-  service: string;
-  appointmentDate: Date;
-  appointmentTime: string;
-};
+// type Props = {
+//   service: string;
+//   appointmentDate: Date;
+//   appointmentTime: string;
+// };
 
 const AppointmentFinal: React.FC = () => {
   const [open, setOpen] = useState(true);

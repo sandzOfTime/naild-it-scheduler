@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
@@ -54,8 +53,6 @@ export default function SignIn() {
 
   const from = location.state?.from?.pathname || "/";
 
-  console.log(from);
-
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -75,7 +72,7 @@ export default function SignIn() {
     if (error) {
       setopen(true);
     }
-  }, [user, error]);
+  }, [user, error, from, navigate]);
 
   return (
     <>
@@ -110,7 +107,7 @@ export default function SignIn() {
               rules={{
                 required: true,
                 pattern:
-                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               }}
               margin="normal"
               type="email"

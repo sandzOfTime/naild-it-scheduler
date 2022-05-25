@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import Lottie from "react-lottie";
 
-import * as spinner from "../lottie/lottie-loading.json";
+// import * as spinner from "../lottie/lottie-loading.json";
 import * as manicure from "../lottie/lottie-manicure-treatment.json";
 
 const defaultOptions = {

@@ -23,7 +23,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { stopSpinner } from "../slices/authLoadSlice";
 
 const Services: React.FC = () => {
-  const [snapshot, loading, error] = useCollectionOnce(
+  const [snapshot, loading] = useCollectionOnce(
     collection(getFirestore(firebaseApp), "services")
   );
   const authLoading = useAppSelector((state) => state.authLoad.loading);
@@ -33,7 +33,7 @@ const Services: React.FC = () => {
     if (authLoading) {
       dispatch(stopSpinner());
     }
-  }, [authLoading]);
+  }, [authLoading, dispatch]);
 
   return (
     <>

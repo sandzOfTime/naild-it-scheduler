@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import "./App.css";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 //Routes
 import Layout from "./pages/Layout";
@@ -15,7 +15,7 @@ import RequireAuth from "./components/RequireAuth";
 
 //Firebase
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -29,7 +29,7 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
+// const analytics = getAnalytics(firebaseApp);
 
 export const auth = getAuth(firebaseApp);
 

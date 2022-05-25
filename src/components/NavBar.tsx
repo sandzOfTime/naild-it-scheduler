@@ -27,7 +27,7 @@ import { loadSpinner } from "../slices/authLoadSlice";
 
 const NavBar: React.FC = () => {
   let navigate = useNavigate();
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
 
