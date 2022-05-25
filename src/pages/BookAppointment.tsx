@@ -33,13 +33,13 @@ import TimeTabs from "../components/TimeTabs";
 
 const BookAppointment: React.FC = () => {
   let params = useParams();
-  const [snapshot, loading, error] = useDocumentOnce(
+  const [snapshot, loading] = useDocumentOnce(
     doc(getFirestore(firebaseApp), "services", params.serviceId || "")
   );
 
   const [value, setValue] = React.useState(0);
   const [date, setDate] = React.useState<Date | null>(new Date());
-  const [time, setTime] = useState<string | null>(null);
+  // const [time, setTime] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [pageLoading, setpageLoading] = useState(false);
 

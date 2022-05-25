@@ -14,11 +14,11 @@ import { useAppSelector, useAppDispatch } from "../app/hooks";
 //Actions
 import { markAsOpen } from "../slices/splashSlice";
 
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+// import Backdrop from "@mui/material/Backdrop";
+// import CircularProgress from "@mui/material/CircularProgress";
 
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../App";
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth } from "../App";
 
 const theme = createTheme({
   palette: {
@@ -37,13 +37,13 @@ const Layout: React.FC = () => {
   const authLoading = useAppSelector((state) => state.authLoad.loading);
   const dispatch = useAppDispatch();
 
-  const [user, loading, error] = useAuthState(auth);
+  // const [user, loading, error] = useAuthState(auth);
 
   useEffect(() => {
     setTimeout(() => {
       dispatch(markAsOpen());
     }, 4000);
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -56,12 +56,6 @@ const Layout: React.FC = () => {
             <Outlet />
           </main>
           <Footer />
-          <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
           <Loader loading={authLoading} />
         </ThemeProvider>
       )}
