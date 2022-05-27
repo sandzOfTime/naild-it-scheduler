@@ -11,10 +11,13 @@ import {
   Avatar,
   Typography,
   Button,
+  CssBaseline,
 } from "@mui/material";
 
 import { Link } from "react-router-dom";
 import EventNoteIcon from "@mui/icons-material/EventNote";
+
+import moment from "moment";
 
 import Logo from "../assets/logo.png";
 
@@ -30,6 +33,7 @@ const AppointmentFinal: React.FC = () => {
   return (
     <>
       <Container component="main" maxWidth="xs">
+        <CssBaseline />
         <Box
           sx={{
             marginTop: 20,
@@ -38,7 +42,7 @@ const AppointmentFinal: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Card>
+          <Card sx={{ width: "125%" }}>
             <CardHeader title="Confirmation" />
             <Divider />
             <CardContent>
@@ -88,7 +92,7 @@ const AppointmentFinal: React.FC = () => {
                       gutterBottom
                       component="div"
                     >
-                      Service
+                      Gel Removal
                     </Typography>
                   </Grid>
                 </Grid>
@@ -115,7 +119,7 @@ const AppointmentFinal: React.FC = () => {
                       gutterBottom
                       component="div"
                     >
-                      Date
+                      {moment().format("dddd, MMMM Do YYYY")}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -142,7 +146,7 @@ const AppointmentFinal: React.FC = () => {
                       gutterBottom
                       component="div"
                     >
-                      Time
+                      12:00 pm
                     </Typography>
                   </Grid>
                 </Grid>
