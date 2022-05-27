@@ -38,7 +38,7 @@ const AppointmentFinal: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Card sx={{ width: 700 }}>
+          <Card>
             <CardHeader title="Confirmation" />
             <Divider />
             <CardContent>
@@ -72,7 +72,7 @@ const AppointmentFinal: React.FC = () => {
                   alignItems="center"
                   spacing={2}
                 >
-                  <Grid item xs={2}>
+                  <Grid item xs={3}>
                     <Typography
                       variant="subtitle1"
                       gutterBottom
@@ -99,7 +99,7 @@ const AppointmentFinal: React.FC = () => {
                   alignItems="center"
                   spacing={2}
                 >
-                  <Grid item xs={2}>
+                  <Grid item xs={3}>
                     <Typography
                       variant="subtitle1"
                       gutterBottom
@@ -126,7 +126,7 @@ const AppointmentFinal: React.FC = () => {
                   alignItems="center"
                   spacing={2}
                 >
-                  <Grid item xs={2}>
+                  <Grid item xs={3}>
                     <Typography
                       variant="subtitle1"
                       gutterBottom
