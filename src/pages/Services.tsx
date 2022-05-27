@@ -12,6 +12,7 @@ import { TextField } from "@mui/material";
 import { firebaseApp } from "../App";
 import { getFirestore, collection } from "firebase/firestore";
 import { useCollectionOnce } from "react-firebase-hooks/firestore";
+import { HashLink } from "react-router-hash-link";
 
 //Components
 import ServiceCard from "../components/ServiceCard";
@@ -71,19 +72,21 @@ const Services: React.FC = () => {
             spacing={2}
             justifyContent="center"
           >
-            <Button
-              variant="contained"
-              size="large"
-              endIcon={<ArrowDownwardIcon />}
-              color="secondary"
-            >
-              Browse Services
-            </Button>
+            <HashLink to="#popServices">
+              <Button
+                variant="contained"
+                size="large"
+                endIcon={<ArrowDownwardIcon />}
+                color="secondary"
+              >
+                Browse Services
+              </Button>
+            </HashLink>
           </Stack>
         </Container>
       </Box>
       <Container sx={{ py: 8 }} maxWidth="md">
-        <Divider textAlign="left" sx={{ mb: 2 }}>
+        <Divider id="popServices" textAlign="left" sx={{ mb: 2 }}>
           Popular Services
         </Divider>
         {/* End hero unit */}
