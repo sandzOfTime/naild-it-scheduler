@@ -29,7 +29,7 @@ import Loader from "../components/Loader";
 import Calendar from "../components/Calendar";
 import AppointmentModal from "../components/AppointmentModal";
 import ConfirmationCard from "../components/ConfirmationCard";
-import TimeTabs from "../components/TimeTabs";
+import TimeTab from "../components/TimeTab";
 
 const BookAppointment: React.FC = () => {
   let params = useParams();
@@ -37,15 +37,15 @@ const BookAppointment: React.FC = () => {
     doc(getFirestore(firebaseApp), "services", params.serviceId || "")
   );
 
-  const [value, setValue] = React.useState(0);
+  // const [value, setValue] = React.useState(0);
   const [date, setDate] = React.useState<Date | null>(new Date());
   // const [time, setTime] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [pageLoading, setpageLoading] = useState(false);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  //   setValue(newValue);
+  // };
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -114,11 +114,7 @@ const BookAppointment: React.FC = () => {
             </Card>
           </Grid>
           <Grid item lg={3} md={6} xl={3} xs={12}>
-            <TimeTabs
-              handleClickOpen={handleClickOpen}
-              handleChange={handleChange}
-              value={value}
-            />
+            <TimeTab handleClickOpen={handleClickOpen} />
           </Grid>
         </Grid>
       </Box>

@@ -4,6 +4,8 @@ import DateAdapter from "@mui/lab/AdapterMoment";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import StaticDatePicker from "@mui/lab/StaticDatePicker";
 
+import moment from "moment";
+
 type Props = {
   date: Date | null;
   onChange: (value: any) => void;
@@ -18,6 +20,7 @@ const Calendar: React.FC<Props> = ({ date, onChange }) => {
         onChange={onChange}
         renderInput={(params) => <TextField {...params} />}
         views={["day"]}
+        minDate={moment()}
       />
     </LocalizationProvider>
   );
