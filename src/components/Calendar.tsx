@@ -4,14 +4,15 @@ import DateAdapter from "@mui/lab/AdapterMoment";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import StaticDatePicker from "@mui/lab/StaticDatePicker";
 
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 type Props = {
   date: Date | null;
   onChange: (value: any) => void;
+  shouldDisableDate?: (day: Moment) => boolean;
 };
 
-const Calendar: React.FC<Props> = ({ date, onChange }) => {
+const Calendar: React.FC<Props> = ({ date, onChange, shouldDisableDate }) => {
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
       <StaticDatePicker
@@ -21,6 +22,7 @@ const Calendar: React.FC<Props> = ({ date, onChange }) => {
         renderInput={(params) => <TextField {...params} />}
         views={["day"]}
         minDate={moment()}
+        shouldDisableDate={shouldDisableDate}
       />
     </LocalizationProvider>
   );

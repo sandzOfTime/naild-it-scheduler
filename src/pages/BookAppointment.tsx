@@ -14,10 +14,10 @@ import {
   DialogTitle,
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 //Firebase
 import { firebaseApp } from "../App";
@@ -29,7 +29,13 @@ import Loader from "../components/Loader";
 import Calendar from "../components/Calendar";
 import AppointmentModal from "../components/AppointmentModal";
 import ConfirmationCard from "../components/ConfirmationCard";
-import TimeTab from "../components/TimeTab";
+import TimeTab, { TimeObj } from "../components/TimeTab";
+
+//Supabase
+import { supabase } from "../api/supabaseClient";
+
+//API
+import { getAvailableTimes } from "../api";
 
 const BookAppointment: React.FC = () => {
   let params = useParams();
@@ -41,22 +47,75 @@ const BookAppointment: React.FC = () => {
   const [date, setDate] = React.useState<Date | null>(new Date());
   // const [time, setTime] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [pageLoading, setpageLoading] = useState(false);
+  const [pageLoading, setpageLoading] = useState(true);
+  const [blackoutDates, setblackoutDates] = useState<any[] | null>([]);
+  const [availableTimes, setavailableTimes] = useState<TimeObj[] | null>([]);
+  const [selectedTime, setselectedTime] = useState<string>("");
+
+  //Use Effects
+  useEffect(() => {
+    const fetchBlackoutDates = async () => {
+      const { data: BlackoutDates, error } = await supabase
+        .from("BlackoutDates")
+        .select("date_of_day");
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setblackoutDates(BlackoutDates);
+    };
+
+    fetchBlackoutDates().catch((error) => {
+      console.error(error);
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchAvailableTimes = async () => {
+      const avail_times = await getAvailableTimes(date);
+      setavailableTimes(avail_times);
+      setpageLoading(false);
+    };
+
+    fetchAvailableTimes().catch((error) => {
+      console.error(error);
+    });
+  }, [date]);
 
   // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
   //   setValue(newValue);
   // };
 
-  const handleClickOpen = () => {
+  const handleDateSelected = (dateObj: TimeObj) => {
+    setselectedTime(dateObj?.time_slot);
     setOpenDialog(true);
+    console.log(dateObj);
   };
 
   const handleClose = () => {
     setOpenDialog(false);
   };
 
-  const submitAppointment = () => {
+  const submitAppointment = (dateObj: any) => {
     setpageLoading(true);
+  };
+
+  const onDateChange = async (value: any) => {
+    setpageLoading(true);
+    setDate(value?._d);
+  };
+
+  const getBlackoutDates = (day: Moment) => {
+    let disabledDates = blackoutDates?.length
+      ? blackoutDates?.map((bd) => bd?.date_of_day)
+      : [];
+
+    return (
+      moment(day).day() === 0 ||
+      disabledDates?.includes(moment(day).format("YYYY-MM-DD"))
+    );
   };
 
   return (
@@ -106,15 +165,17 @@ const BookAppointment: React.FC = () => {
                 />
                 <Calendar
                   date={date}
-                  onChange={(dateObj) => {
-                    setDate(dateObj?._d);
-                  }}
+                  onChange={onDateChange}
+                  shouldDisableDate={getBlackoutDates}
                 />
               </CardContent>
             </Card>
           </Grid>
           <Grid item lg={3} md={6} xl={3} xs={12}>
-            <TimeTab handleClickOpen={handleClickOpen} />
+            <TimeTab
+              times={availableTimes}
+              handleDateSelected={handleDateSelected}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -125,7 +186,7 @@ const BookAppointment: React.FC = () => {
             title={snapshot?.data()?.title}
             price={snapshot?.data()?.price}
             date={moment(date).format("MMMM Do, YYYY")}
-            time="12:00 pm"
+            time={selectedTime}
           />
         </DialogContent>
         <DialogActions>

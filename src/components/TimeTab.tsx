@@ -2,11 +2,17 @@ import React from "react";
 
 import { Box, Stack, Button, Typography, Divider } from "@mui/material";
 
-type TimeTabsProps = {
-  handleClickOpen: () => void;
+export type TimeObj = {
+  time_slot: string;
+  actual_time: Date | any;
 };
 
-const TimeTab: React.FC<TimeTabsProps> = ({ handleClickOpen }) => {
+type TimeTabsProps = {
+  times: TimeObj[] | null;
+  handleDateSelected: (dateObj: TimeObj) => void;
+};
+
+const TimeTab: React.FC<TimeTabsProps> = ({ handleDateSelected, times }) => {
   return (
     <>
       <Box
@@ -32,31 +38,19 @@ const TimeTab: React.FC<TimeTabsProps> = ({ handleClickOpen }) => {
         }}
       >
         <Stack spacing={1.5}>
-          <Button
-            variant="outlined"
-            onClick={handleClickOpen}
-            sx={{ width: "300px" }}
-          >
-            10:00 am
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            11:00 am
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            11:30 am
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            12:00 pm
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            1:00 pm
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            1:30 pm
-          </Button>
-          <Button variant="outlined" sx={{ width: "300px" }}>
-            2:30 pm
-          </Button>
+          {times &&
+            times.map((time) => (
+              <Button
+                key={time.time_slot}
+                variant="outlined"
+                onClick={() => {
+                  handleDateSelected(time);
+                }}
+                sx={{ width: "300px" }}
+              >
+                {time.time_slot}
+              </Button>
+            ))}
         </Stack>
       </Box>
     </>
