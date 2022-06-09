@@ -1,8 +1,7 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import DateAdapter from "@mui/lab/AdapterMoment";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import StaticDatePicker from "@mui/lab/StaticDatePicker";
+import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 
 import moment, { Moment } from "moment";
 

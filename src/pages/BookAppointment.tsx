@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import moment, { Moment } from "moment";
 
@@ -52,6 +52,9 @@ const BookAppointment: React.FC = () => {
   const [availableTimes, setavailableTimes] = useState<TimeObj[] | null>([]);
   const [selectedTime, setselectedTime] = useState<string>("");
 
+  //Navigate
+  let navigate = useNavigate();
+
   //Use Effects
   useEffect(() => {
     const fetchBlackoutDates = async () => {
@@ -84,14 +87,9 @@ const BookAppointment: React.FC = () => {
     });
   }, [date]);
 
-  // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-  //   setValue(newValue);
-  // };
-
   const handleDateSelected = (dateObj: TimeObj) => {
     setselectedTime(dateObj?.time_slot);
     setOpenDialog(true);
-    console.log(dateObj);
   };
 
   const handleClose = () => {
@@ -99,7 +97,13 @@ const BookAppointment: React.FC = () => {
   };
 
   const submitAppointment = (dateObj: any) => {
-    setpageLoading(true);
+    navigate("/appointment-confirmed", {
+      state: {
+        service: snapshot?.data()?.title,
+        date: date,
+        time: selectedTime,
+      },
+    });
   };
 
   const onDateChange = async (value: any) => {
@@ -191,9 +195,7 @@ const BookAppointment: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Link to="/appointment-confirmed">
-            <Button onClick={submitAppointment}>Confirm</Button>
-          </Link>
+          <Button onClick={submitAppointment}>Confirm</Button>
         </DialogActions>
       </Dialog>
       <Divider sx={{ mt: 5 }} />
