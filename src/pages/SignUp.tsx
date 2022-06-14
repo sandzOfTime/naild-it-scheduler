@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import AccountCircleSharpIcon from "@mui/icons-material/AccountCircleSharp";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { InputAdornment } from "@mui/material";
 
 import { Link } from "react-router-dom";
 
@@ -23,12 +24,14 @@ import ValidatedInput from "../components/ValidatedInput";
 
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "../App";
+import { supabase } from "../api/supabaseClient";
 
 type FormInput = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: number;
 };
 
 export default function SignUp() {
@@ -42,9 +45,25 @@ export default function SignUp() {
     useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
   const onSubmit = async (data: FormInput) => {
-    const { email, password } = data;
-    // //Attempt to create user
-    createUserWithEmailAndPassword(email, password);
+    const { firstName, lastName, email, password, phoneNumber } = data;
+
+    try {
+      //Attempt to create user and store user data in Database
+      const { data, error } = await supabase.from("Users").insert([
+        {
+          first_name: firstName,
+          last_name: lastName,
+          phone_num: phoneNumber,
+          email_address: email,
+        },
+      ]);
+
+      if (error) console.error(error);
+
+      if (data) createUserWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -117,6 +136,24 @@ export default function SignUp() {
                     errorText="Please provide a valid Password"
                     rules={{ required: true }}
                     type="password"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ValidatedInput
+                    label="Phone Number"
+                    id="phoneNumber"
+                    error={!!errors.phoneNumber}
+                    control={control}
+                    errorText="Please provide a valid Phone Number"
+                    rules={{
+                      required: true,
+                      maxLength: 7,
+                      pattern: /^[1-9]([\\s-]?\d){3,6}$/,
+                    }}
+                    type="tel"
+                    startAdornment={
+                      <InputAdornment position="start">(242)</InputAdornment>
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>

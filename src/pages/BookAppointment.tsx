@@ -96,7 +96,7 @@ const BookAppointment: React.FC = () => {
     setOpenDialog(false);
   };
 
-  const submitAppointment = (dateObj: any) => {
+  const submitAppointment = () => {
     navigate("/appointment-confirmed", {
       state: {
         service: snapshot?.data()?.title,

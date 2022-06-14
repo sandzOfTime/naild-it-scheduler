@@ -11,11 +11,14 @@ type FormProps = {
   control: any;
   margin?: "normal";
   type?: string;
+  startAdornment?: React.ReactNode;
 };
 
 type Rules = {
   required: boolean;
   pattern?: any;
+  minLength?: number;
+  maxLength?: number;
 };
 
 const ValidatedInput: React.FC<FormProps> = ({
@@ -27,6 +30,7 @@ const ValidatedInput: React.FC<FormProps> = ({
   rules,
   margin,
   type,
+  startAdornment,
 }) => {
   return (
     <>
@@ -45,6 +49,7 @@ const ValidatedInput: React.FC<FormProps> = ({
             helperText={error && errorText}
             margin={margin}
             type={type}
+            InputProps={{ startAdornment: startAdornment }}
           />
         )}
         control={control}
