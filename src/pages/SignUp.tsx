@@ -11,12 +11,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { InputAdornment } from "@mui/material";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
-
-//Pages
-import SignUpVerification from "./SignUpVerification";
+import "../utils/string.extensions";
 
 //Components
 import Loader from "../components/Loader";
@@ -42,14 +40,17 @@ export default function SignUp() {
   } = useForm<FormInput>();
 
   const [createUserWithEmailAndPassword, user, loading] =
-    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+    useCreateUserWithEmailAndPassword(auth);
+
+  let navigate = useNavigate();
 
   const onSubmit = async (data: FormInput) => {
     const { firstName, lastName, email, password, phoneNumber } = data;
 
     try {
       //Attempt to create user and store user data in Database
-      const { data, error } = await supabase.from("Users").insert([
+      createUserWithEmailAndPassword(email, password);
+      const { data: users, error } = await supabase.from("Users").insert([
         {
           first_name: firstName,
           last_name: lastName,
@@ -60,7 +61,13 @@ export default function SignUp() {
 
       if (error) console.error(error);
 
-      if (data) createUserWithEmailAndPassword(email, password);
+      if (users) {
+        navigate("/", {
+          state: {
+            welcome_message: `Welcome ${firstName.capitalize()}! Happy to have you!`,
+          },
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -68,137 +75,133 @@ export default function SignUp() {
 
   return (
     <>
-      {!user ? (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 15,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <AccountCircleSharpIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
           <Box
-            sx={{
-              marginTop: 15,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+            component="form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{ mt: 3 }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <AccountCircleSharpIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign up
-            </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit(onSubmit)}
-              sx={{ mt: 3 }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <ValidatedInput
-                    label="First Name"
-                    id="firstName"
-                    error={!!errors.firstName}
-                    control={control}
-                    errorText="Please provide a valid First Name"
-                    rules={{ required: true }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <ValidatedInput
-                    label="Last Name"
-                    id="lastName"
-                    error={!!errors.lastName}
-                    control={control}
-                    errorText="Please provide a valid Last Name"
-                    rules={{ required: true }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ValidatedInput
-                    label="Email"
-                    id="email"
-                    error={!!errors.email}
-                    control={control}
-                    errorText="Please provide a valid Email"
-                    rules={{
-                      required: true,
-                      pattern:
-                        /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                    }}
-                    type="email"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ValidatedInput
-                    label="Password"
-                    id="password"
-                    error={!!errors.password}
-                    control={control}
-                    errorText="Please provide a valid Password"
-                    rules={{ required: true }}
-                    type="password"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ValidatedInput
-                    label="Phone Number"
-                    id="phoneNumber"
-                    error={!!errors.phoneNumber}
-                    control={control}
-                    errorText="Please provide a valid Phone Number"
-                    rules={{
-                      required: true,
-                      maxLength: 7,
-                      pattern: /^[1-9]([\\s-]?\d){3,6}$/,
-                    }}
-                    type="tel"
-                    startAdornment={
-                      <InputAdornment position="start">(242)</InputAdornment>
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox value="allowExtraEmails" color="primary" />
-                    }
-                    label="I want to receive marketing promotions and updates via email."
-                  />
-                </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <ValidatedInput
+                  label="First Name"
+                  id="firstName"
+                  error={!!errors.firstName}
+                  control={control}
+                  errorText="Please provide a valid First Name"
+                  rules={{ required: true }}
+                />
               </Grid>
-              {loading ? (
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  disabled
-                >
-                  Signing up user...
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign Up
-                </Button>
-              )}
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Typography variant="body2">
-                    <Link to="/sign-in">Already have an account? Sign in</Link>
-                  </Typography>
-                </Grid>
+              <Grid item xs={12} sm={6}>
+                <ValidatedInput
+                  label="Last Name"
+                  id="lastName"
+                  error={!!errors.lastName}
+                  control={control}
+                  errorText="Please provide a valid Last Name"
+                  rules={{ required: true }}
+                />
               </Grid>
-            </Box>
+              <Grid item xs={12}>
+                <ValidatedInput
+                  label="Email"
+                  id="email"
+                  error={!!errors.email}
+                  control={control}
+                  errorText="Please provide a valid Email"
+                  rules={{
+                    required: true,
+                    pattern:
+                      /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  }}
+                  type="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ValidatedInput
+                  label="Password"
+                  id="password"
+                  error={!!errors.password}
+                  control={control}
+                  errorText="Please provide a valid Password"
+                  rules={{ required: true }}
+                  type="password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ValidatedInput
+                  label="Phone Number"
+                  id="phoneNumber"
+                  error={!!errors.phoneNumber}
+                  control={control}
+                  errorText="Please provide a valid Phone Number"
+                  rules={{
+                    required: true,
+                    maxLength: 7,
+                    pattern: /^[1-9]([\\s-]?\d){3,6}$/,
+                  }}
+                  type="tel"
+                  startAdornment={
+                    <InputAdornment position="start">(242)</InputAdornment>
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox value="allowExtraEmails" color="primary" />
+                  }
+                  label="I want to receive marketing promotions and updates via email."
+                />
+              </Grid>
+            </Grid>
+            {loading ? (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled
+              >
+                Signing up user...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign Up
+              </Button>
+            )}
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Typography variant="body2">
+                  <Link to="/sign-in">Already have an account? Sign in</Link>
+                </Typography>
+              </Grid>
+            </Grid>
           </Box>
-          <Loader loading={loading} />
-        </Container>
-      ) : (
-        <SignUpVerification />
-      )}
+        </Box>
+        <Loader loading={loading} />
+      </Container>
     </>
   );
 }

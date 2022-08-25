@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
@@ -13,15 +13,23 @@ import { firebaseApp } from "../App";
 import { getFirestore, collection } from "firebase/firestore";
 import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { HashLink } from "react-router-hash-link";
+import { useLocation } from "react-router-dom";
 
 //Components
 import ServiceCard from "../components/ServiceCard";
 import Loader from "../components/Loader";
+import CustomAlert from "../components/CustomAlert";
 
 //Redux Hooks
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 import { stopSpinner } from "../slices/authLoadSlice";
+
+type LocationProps = {
+  state: {
+    welcome_message: string;
+  };
+};
 
 const Services: React.FC = () => {
   const [snapshot, loading] = useCollectionOnce(
@@ -29,12 +37,17 @@ const Services: React.FC = () => {
   );
   const authLoading = useAppSelector((state) => state.authLoad.loading);
   const dispatch = useAppDispatch();
+  const [welcomeMessage, setWelcomeMessage] = useState<string>("");
+
+  let location = useLocation() as LocationProps;
 
   useEffect(() => {
     if (authLoading) {
       dispatch(stopSpinner());
     }
-  }, [authLoading, dispatch]);
+
+    setWelcomeMessage(location?.state?.welcome_message);
+  }, [authLoading, dispatch, location]);
 
   return (
     <>
@@ -154,6 +167,14 @@ const Services: React.FC = () => {
         </Grid>
       </Container>
       <Loader loading={loading} />
+      <CustomAlert
+        open={!!welcomeMessage}
+        severity="success"
+        message={welcomeMessage}
+        handleClose={() => {
+          setWelcomeMessage("");
+        }}
+      />
     </>
   );
 };

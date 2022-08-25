@@ -37,6 +37,8 @@ import { supabase } from "../api/supabaseClient";
 //API
 import { getAvailableTimes } from "../api";
 
+import { getCurrentUser } from "../utils/user";
+
 const BookAppointment: React.FC = () => {
   let params = useParams();
   const [snapshot, loading] = useDocumentOnce(
@@ -96,7 +98,22 @@ const BookAppointment: React.FC = () => {
     setOpenDialog(false);
   };
 
-  const submitAppointment = () => {
+  const submitAppointment = async () => {
+    let user = await getCurrentUser();
+    const { data: appointments, error } = await supabase
+      .from("Appointments")
+      .insert([
+        {
+          user_id: user?.id,
+          service_id: snapshot?.data()?.supabaseId,
+          date: date,
+          time_string: selectedTime,
+          notes: "",
+        },
+      ]);
+
+    if (error) return;
+
     navigate("/appointment-confirmed", {
       state: {
         service: snapshot?.data()?.title,

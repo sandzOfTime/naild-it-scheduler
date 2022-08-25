@@ -33,6 +33,7 @@ const NavBar: React.FC = () => {
 
   const handleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    console.log(event);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -88,7 +89,7 @@ const NavBar: React.FC = () => {
               </Button>
             </Link>
           ) : (
-            <div>
+            <Box sx={{ flexGrow: 0 }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -97,8 +98,8 @@ const NavBar: React.FC = () => {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar src={user?.photoURL || "#"} alt={user.email || "user"}>
-                  A
+                <Avatar src={user?.photoURL || "#"} alt={user?.email || "user"}>
+                  {user.email && user.email.charAt(0).toUpperCase()}
                 </Avatar>
               </IconButton>
               <Menu
@@ -119,7 +120,7 @@ const NavBar: React.FC = () => {
                 <MenuItem onClick={handleClose}>My Account</MenuItem>
                 <MenuItem onClick={logout}>Sign out</MenuItem>
               </Menu>
-            </div>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
