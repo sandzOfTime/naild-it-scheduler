@@ -171,7 +171,7 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            {loading ? (
+            {loading && !user ? (
               <Button
                 type="submit"
                 fullWidth

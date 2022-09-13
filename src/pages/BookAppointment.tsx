@@ -34,10 +34,10 @@ import TimeTab, { TimeObj } from "../components/TimeTab";
 //Supabase
 import { supabase } from "../api/supabaseClient";
 
-//API
+//API/Utils
 import { getAvailableTimes } from "../api";
-
 import { getCurrentUser } from "../utils/user";
+import { calculateEndTime } from "../utils/times";
 
 const BookAppointment: React.FC = () => {
   let params = useParams();
@@ -45,14 +45,15 @@ const BookAppointment: React.FC = () => {
     doc(getFirestore(firebaseApp), "services", params.serviceId || "")
   );
 
-  // const [value, setValue] = React.useState(0);
   const [date, setDate] = React.useState<Date | null>(new Date());
-  // const [time, setTime] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [pageLoading, setpageLoading] = useState(true);
   const [blackoutDates, setblackoutDates] = useState<any[] | null>([]);
   const [availableTimes, setavailableTimes] = useState<TimeObj[] | null>([]);
-  const [selectedTime, setselectedTime] = useState<string>("");
+  const [selectedTime, setselectedTime] = useState<TimeObj>({
+    time_slot: "9:00 am",
+    actual_time: new Date(),
+  });
 
   //Navigate
   let navigate = useNavigate();
@@ -90,7 +91,7 @@ const BookAppointment: React.FC = () => {
   }, [date]);
 
   const handleDateSelected = (dateObj: TimeObj) => {
-    setselectedTime(dateObj?.time_slot);
+    setselectedTime(dateObj);
     setOpenDialog(true);
   };
 
@@ -100,17 +101,24 @@ const BookAppointment: React.FC = () => {
 
   const submitAppointment = async () => {
     let user = await getCurrentUser();
+    const endDate = calculateEndTime(
+      snapshot?.data()?.duration,
+      selectedTime?.actual_time
+    );
     const { data: appointments, error } = await supabase
       .from("Appointments")
       .insert([
         {
           user_id: user?.id,
           service_id: snapshot?.data()?.supabaseId,
-          date: date,
-          time_string: selectedTime,
+          startDate: selectedTime?.actual_time,
+          endDate,
+          time_string: selectedTime?.time_slot,
           notes: "",
         },
       ]);
+
+    console.log(appointments);
 
     if (error) return;
 
@@ -118,7 +126,7 @@ const BookAppointment: React.FC = () => {
       state: {
         service: snapshot?.data()?.title,
         date: date,
-        time: selectedTime,
+        time: selectedTime?.time_slot,
       },
     });
   };
@@ -207,7 +215,7 @@ const BookAppointment: React.FC = () => {
             title={snapshot?.data()?.title}
             price={snapshot?.data()?.price}
             date={moment(date).format("MMMM Do, YYYY")}
-            time={selectedTime}
+            time={selectedTime?.time_slot}
           />
         </DialogContent>
         <DialogActions>
