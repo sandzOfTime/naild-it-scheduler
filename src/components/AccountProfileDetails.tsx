@@ -29,7 +29,7 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
 
   return (
     <form autoComplete="off" noValidate>
