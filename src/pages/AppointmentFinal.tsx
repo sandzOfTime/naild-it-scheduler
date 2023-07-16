@@ -33,6 +33,10 @@ const AppointmentFinal: React.FC = () => {
   const [open, setOpen] = useState(true);
   let location = useLocation() as LocationProps;
 
+  const handleClose = () => () => {
+    setOpen(false);
+  };
+
   return (
     <>
       {location?.state ? (
@@ -176,7 +180,7 @@ const AppointmentFinal: React.FC = () => {
             open={open}
             severity="success"
             message="You've successfully booked your nail appointment!"
-            handleClose={() => setOpen(false)}
+            handleClose={handleClose}
           />
         </>
       ) : (

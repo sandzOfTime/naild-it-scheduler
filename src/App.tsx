@@ -12,11 +12,13 @@ import AuthAction from "./components/AuthAction";
 import BookAppointment from "./pages/BookAppointment";
 import AppointmentFinal from "./pages/AppointmentFinal";
 import RequireAuth from "./components/RequireAuth";
+import Account from "./pages/Account";
 
 //Firebase
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -32,6 +34,7 @@ export const firebaseApp = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(firebaseApp);
 
 export const auth = getAuth(firebaseApp);
+export const db = getFirestore(firebaseApp);
 
 const App: FC = () => {
   return (
@@ -60,6 +63,7 @@ const App: FC = () => {
             </main>
           }
         />
+        <Route path="my-account" element={<Account />} />
       </Route>
     </Routes>
   );

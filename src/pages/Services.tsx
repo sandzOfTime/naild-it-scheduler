@@ -49,6 +49,10 @@ const Services: React.FC = () => {
     setWelcomeMessage(location?.state?.welcome_message);
   }, [authLoading, dispatch, location]);
 
+  const handleClose = () => () => {
+    setWelcomeMessage("");
+  };
+
   return (
     <>
       {/* Hero unit */}
@@ -171,9 +175,7 @@ const Services: React.FC = () => {
         open={!!welcomeMessage}
         severity="success"
         message={welcomeMessage}
-        handleClose={() => {
-          setWelcomeMessage("");
-        }}
+        handleClose={handleClose}
       />
     </>
   );

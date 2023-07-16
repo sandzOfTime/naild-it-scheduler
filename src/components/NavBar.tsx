@@ -46,6 +46,11 @@ const NavBar: React.FC = () => {
     navigate("/");
   };
 
+  const goToAccount = () => {
+    navigate("/my-account");
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <GlobalStyles
@@ -117,7 +122,8 @@ const NavBar: React.FC = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>My Account</MenuItem>
+                <MenuItem onClick={goToAccount}>My Account</MenuItem>
+                <MenuItem onClick={() => {}}>My Appointments</MenuItem>
                 <MenuItem onClick={logout}>Sign out</MenuItem>
               </Menu>
             </Box>

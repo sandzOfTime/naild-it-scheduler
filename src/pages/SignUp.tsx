@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -45,33 +45,53 @@ export default function SignUp() {
   let navigate = useNavigate();
 
   const onSubmit = async (data: FormInput) => {
-    const { firstName, lastName, email, password, phoneNumber } = data;
+    const { email, password } = data;
 
     try {
       //Attempt to create user and store user data in Database
       createUserWithEmailAndPassword(email, password);
-      const { data: users, error } = await supabase.from("Users").insert([
-        {
-          first_name: firstName,
-          last_name: lastName,
-          phone_num: phoneNumber,
-          email_address: email,
-        },
-      ]);
-
-      if (error) console.error(error);
-
-      if (users) {
-        navigate("/", {
-          state: {
-            welcome_message: `Welcome ${firstName.capitalize()}! Happy to have you!`,
-          },
-        });
-      }
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const createUser = async ({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    }: any) => {
+      try {
+        const { data: users, error } = await supabase.from("Users").insert([
+          {
+            first_name: firstName,
+            last_name: lastName,
+            phone_num: phoneNumber,
+            email_address: email,
+            fbase_user_id: user?.user?.uid,
+          },
+        ]);
+
+        if (error) console.error(error);
+
+        if (users) {
+          console.log(users);
+          navigate("/", {
+            state: {
+              welcome_message: `Welcome ${firstName.capitalize()}! Happy to have you!`,
+            },
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (user) {
+      createUser(control?._formValues).catch(console.error);
+    }
+  }, [user, control?._formValues, navigate]);
 
   return (
     <>

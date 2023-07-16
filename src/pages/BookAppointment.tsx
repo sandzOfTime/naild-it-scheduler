@@ -38,6 +38,7 @@ import { supabase } from "../api/supabaseClient";
 import { getAvailableTimes } from "../api";
 import { getCurrentUser } from "../utils/user";
 import { calculateEndTime } from "../utils/times";
+import axios from "axios";
 
 const BookAppointment: React.FC = () => {
   let params = useParams();
@@ -100,27 +101,67 @@ const BookAppointment: React.FC = () => {
   };
 
   const submitAppointment = async () => {
+    setpageLoading(true);
     let user = await getCurrentUser();
+    const startDate = selectedTime?.actual_time;
     const endDate = calculateEndTime(
       snapshot?.data()?.duration,
       selectedTime?.actual_time
     );
+
+    let fullName = `${user?.first_name} ${user?.last_name}`;
+    let email = user?.email_address;
+    let service = snapshot?.data()?.title;
+    let time = selectedTime?.time_slot;
+    let summary = `${service} for ${fullName}`;
+
     const { data: appointments, error } = await supabase
       .from("Appointments")
       .insert([
         {
           user_id: user?.id,
           service_id: snapshot?.data()?.supabaseId,
-          startDate: selectedTime?.actual_time,
+          startDate,
           endDate,
-          time_string: selectedTime?.time_slot,
+          time_string: time,
           notes: "",
         },
       ]);
 
-    console.log(appointments);
-
     if (error) return;
+
+    if (appointments) {
+      try {
+        const { data: appointment } = await axios.post(
+          "https://us-central1-naild-it-scheduler.cloudfunctions.net/api/appointment",
+          {
+            description: `${snapshot?.data()?.description}`,
+            startDate: selectedTime?.actual_time,
+            endDate,
+            summary,
+          }
+        );
+
+        if (appointment) {
+          const { data: sentEmail } = await axios.post(
+            "https://us-central1-naild-it-scheduler.cloudfunctions.net/api/email",
+            {
+              name: fullName,
+              email,
+              service,
+              time,
+              summary,
+              appointmentDate: moment(startDate).format("dddd, MMMM Do YYYY"),
+            }
+          );
+
+          if (sentEmail) console.log(sentEmail);
+        }
+      } catch (err) {
+        console.error(err);
+        console.log(process.env.REACT_APP_CALENDAR_URL);
+      }
+    }
 
     navigate("/appointment-confirmed", {
       state: {
