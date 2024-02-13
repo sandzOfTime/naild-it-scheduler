@@ -11,9 +11,10 @@ const useCurrentUser = (auth: Auth) => {
 
   useEffect(() => {
     if (user) {
+      console.log(user);
       const q = query(
         collection(db, "users"),
-        where("user_id", "==", user?.uid)
+        where("userId", "==", user?.uid)
       );
       getDocs(q).then((snapshot) => {
         setCurrentUser(snapshot?.docs[0]?.data());

@@ -90,7 +90,7 @@ const NavBar: React.FC = () => {
                 variant="outlined"
                 sx={{ my: 1, mx: 1.5, color: "white" }}
               >
-                Login
+                Sign In
               </Button>
             </Link>
           ) : (

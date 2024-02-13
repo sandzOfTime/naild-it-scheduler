@@ -12,10 +12,10 @@ import {
 
 const AccountProfileDetails = ({ user }: { user: any }) => {
   const [values, setValues] = useState({
-    firstName: user?.first_name,
-    lastName: user?.last_name,
-    email: user?.email_address,
-    phone: user?.phone_number,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    email: user?.emailAddress,
+    phone: user?.phoneNumber,
   });
   const [isChanged, setIsChanged] = useState<boolean>(false);
 
@@ -70,6 +70,7 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
                 required
                 value={values.email}
                 variant="outlined"
+                disabled
               />
             </Grid>
             <Grid item md={6} xs={12}>
