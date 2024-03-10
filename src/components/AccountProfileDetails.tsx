@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import {
   Box,
   Button,
@@ -10,24 +10,20 @@ import {
   TextField,
 } from "@mui/material";
 
-const AccountProfileDetails = ({ user }: { user: any }) => {
-  const [values, setValues] = useState({
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    email: user?.emailAddress,
-    phone: user?.phoneNumber,
-  });
-  const [isChanged, setIsChanged] = useState<boolean>(false);
+type ProfileProps = {
+  userInfo: UserInfo;
+  isDetailsChanged: boolean;
+  handleDetailsChange: (event: {    target: {        name: any;        value: any;    };}) => void;
+}
 
-  const handleChange = (event: { target: { name: any; value: any } }) => {
-    if (!isChanged) {
-      setIsChanged(true);
-    }
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
+type UserInfo = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNum: string;
+}
+
+const AccountProfileDetails: React.FC<ProfileProps> = ({userInfo, isDetailsChanged, handleDetailsChange}) => {
 
   // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
 
@@ -44,9 +40,9 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
                 helperText="Please specify the first name"
                 label="First name"
                 name="firstName"
-                onChange={handleChange}
+                onChange={handleDetailsChange}
                 required
-                value={values.firstName}
+                value={userInfo.firstName}
                 variant="outlined"
               />
             </Grid>
@@ -55,9 +51,9 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
                 fullWidth
                 label="Last name"
                 name="lastName"
-                onChange={handleChange}
+                onChange={handleDetailsChange}
                 required
-                value={values.lastName}
+                value={userInfo.lastName}
                 variant="outlined"
               />
             </Grid>
@@ -66,9 +62,9 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
                 fullWidth
                 label="Email Address"
                 name="email"
-                onChange={handleChange}
+                onChange={handleDetailsChange}
                 required
-                value={values.email}
+                value={userInfo.email}
                 variant="outlined"
                 disabled
               />
@@ -77,10 +73,10 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
               <TextField
                 fullWidth
                 label="Phone Number"
-                name="phone"
-                onChange={handleChange}
+                name="phoneNum"
+                onChange={handleDetailsChange}
                 type="number"
-                value={values.phone}
+                value={userInfo.phoneNum}
                 variant="outlined"
               />
             </Grid>
@@ -94,7 +90,7 @@ const AccountProfileDetails = ({ user }: { user: any }) => {
             p: 2,
           }}
         >
-          <Button color="primary" variant="contained" disabled={!isChanged}>
+          <Button color="primary" variant="contained" disabled={!isDetailsChanged}>
             Save details
           </Button>
         </Box>
